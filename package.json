@@ -1,0 +1,18 @@
+{
+    "name": "KSP",
+    "description": "Kissy Simple Pipe",
+    "version": "0.0.1",
+    "author": "Neekey ni184775761@gmail.com",
+    "keywords": [ "KSP" ],
+    "main": "index.js",
+    "bin": { "KSP": "./bin/KSP" },
+    "repository": {
+    "type": "git",
+        "url": "git@github.com:Neekey/KSP.git"
+    },
+    "dependencies": {
+        "iconv-lite": "*",
+        "commander": "*",
+        "mustache": "*"
+    }
+}
