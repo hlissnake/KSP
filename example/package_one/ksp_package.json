@@ -1,0 +1,9 @@
+{
+    "name": "package_one",
+    "path": "/users/neekey/Dropbox/nodejs/app/KSP/example/",
+    "charset": "gbk",
+    "pub": "2345555",
+    "main": "./index.js",
+    "outputFilename": "index.combo.js",
+    "outputPath": "publish/"
+}

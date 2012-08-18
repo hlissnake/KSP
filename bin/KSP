@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+
+var program = require( 'commander' );
+var fs = require( 'fs' );
+var Path = require( 'path' );
+var Mustache = require( 'mustache' );
+var moduleComplier = require( '../lib/moduleComplier' );
+var _ = require( 'underscore' );
+var packageInfo = require( '../package.json' );
+
+// The directory that executing `ksp`.
+var EXECUTE_BASE_PATH = process.cwd() || '.';
+var KSP_CONFIG_FILENAME = 'ksp_package.json';
+
+program
+    .version( packageInfo.version )
+    .parse(process.argv);
+
+var packageConfig = {
+    name: 'KSB-Package',
+    path: '',
+    charset: 'gbk',
+    pub: '',
+    main: './index.js',
+    outputFilename: 'index.combo.js',
+    outputPath: 'publish/'
+};
+
+function readPkgConfig(){
+    return require( Path.join( EXECUTE_BASE_PATH, KSP_CONFIG_FILENAME ) );
+}
+
+var kspConfig = readPkgConfig();
+var inputPath = kspConfig.main;
+var outputPath = Path.resolve( EXECUTE_BASE_PATH, kspConfig.outputPath );
+if( kspConfig.pub ){
+    outputPath = Path.resolve( outputPath, kspConfig.pub );
+}
+var outPutFilename = Path.resolve( outputPath, kspConfig.outputFilename );
+
+if( kspConfig ){
+    _.defaults( kspConfig, packageConfig );
+}
+
+var modulePackage = {
+    name: kspConfig.name,
+    path: kspConfig.path,
+    charset: kspConfig.charset
+};
+moduleComplier.config({
+    packages: [
+        {
+            name: kspConfig.name,
+            path: kspConfig.path,
+            charset: kspConfig.charset
+        }
+    ]
+});
+
+console.log( kspConfig.main, outPutFilename );
+console.log( modulePackage );
+
+moduleComplier.build( kspConfig.main, outPutFilename );
+
+
