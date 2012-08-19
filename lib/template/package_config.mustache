@@ -1,0 +1,21 @@
+(function( S ){
+
+    // 获取包path
+    var packagePath = currentScriptPath.substring( 0, currentScriptPath.indexOf( mainModPath ) );
+
+    // 包配置
+    S.config({
+        packages:[
+            {
+                name: '{{packageName}}', // 包名
+                tag:"{{tag}}", // 动态加载包内的模块js文件时,
+                // 自动加上 ?t=20110323, 用于文件更新
+                path: packagePath,
+                charset:"{{charset}}" // 包里模块文件编码格式
+            }
+        ]
+    });
+
+    S.use( mainModPath );
+
+})(KISSY, {{< getPackagePath }}, '{{packageName}}', '{{packageTag}}', '{{charset}}' );

@@ -4,50 +4,86 @@ var program = require( 'commander' );
 var fs = require( 'fs' );
 var Path = require( 'path' );
 var Mustache = require( 'mustache' );
-var moduleComplier = require( '../lib/moduleComplier' );
 var _ = require( 'underscore' );
+
+// Module to parser kissy.
+var moduleCompiler = require( '../lib/moduleCompiler' );
+// KSP info.
 var packageInfo = require( '../package.json' );
+var Util = require( '../lib/util' );
 
 // The directory that executing `ksp`.
 var EXECUTE_BASE_PATH = process.cwd() || '.';
+// KSP configuration filename.
 var KSP_CONFIG_FILENAME = 'ksp_package.json';
 
 program
+    // Set version.
     .version( packageInfo.version )
+    // Parse the arguments.
     .parse(process.argv);
 
+// The default KSP configuration.
 var packageConfig = {
     name: 'KSB-Package',
     path: '',
     charset: 'gbk',
     pub: '',
     main: './index.js',
-    outputFilename: 'index.combo.js',
-    outputPath: 'publish/'
+    outputPath: 'publish/index.combo.js'
 };
 
+
+/**
+ * Read the configuration from KSP config file.
+ *
+ * @return {*}
+ */
 function readPkgConfig(){
-    return require( Path.join( EXECUTE_BASE_PATH, KSP_CONFIG_FILENAME ) );
+
+    var cfgPath = Path.join( EXECUTE_BASE_PATH, KSP_CONFIG_FILENAME );
+    console.log( cfgPath );
+    if( fs.existsSync( cfgPath ) ){
+        return require( Path.join( cfgPath ) );
+    }
+    else {
+        return undefined;
+    }
 }
 
+// ==== Main ====
+
+// Get KSP config, if Fail, terminal this task.
 var kspConfig = readPkgConfig();
+if( kspConfig === undefined ){
+    throw new Error( '`' + KSP_CONFIG_FILENAME + '` is not found in directory: ' + EXECUTE_BASE_PATH );
+}
+
+// If path is not specified, calculate it automatically.
+if( !kspConfig.path ){
+    kspConfig.path = Util.getPackagePath( kspConfig.name, EXECUTE_BASE_PATH );
+}
+
+// The main module path.
+var mainModulePath = Path.relative( kspConfig.path, Path.resolve( EXECUTE_BASE_PATH, kspConfig.main ) );
+
+
+// The target file for moduleCompiler to parse.
 var inputPath = kspConfig.main;
+
+// If publish timestamp directory is specified. Than add that dir.
+// ex: `outputPath` is 'out/index.combo.js' and set `pub` to 20120819,
+// than the final output path will be `out/pub/index.combo.js`.
 var outputPath = Path.resolve( EXECUTE_BASE_PATH, kspConfig.outputPath );
 if( kspConfig.pub ){
-    outputPath = Path.resolve( outputPath, kspConfig.pub );
-}
-var outPutFilename = Path.resolve( outputPath, kspConfig.outputFilename );
-
-if( kspConfig ){
-    _.defaults( kspConfig, packageConfig );
+    outputPath = Path.resolve(
+        Path.resolve( Path.dirname( outputPath ), kspConfig.pub ),
+        Path.basename( outputPath )
+    );
 }
 
-var modulePackage = {
-    name: kspConfig.name,
-    path: kspConfig.path,
-    charset: kspConfig.charset
-};
-moduleComplier.config({
+// Config module compiler.
+moduleCompiler.config({
     packages: [
         {
             name: kspConfig.name,
@@ -57,9 +93,7 @@ moduleComplier.config({
     ]
 });
 
-console.log( kspConfig.main, outPutFilename );
-console.log( modulePackage );
-
-moduleComplier.build( kspConfig.main, outPutFilename );
+// Build!
+moduleCompiler.build( inputPath, outputPath );
 
 
