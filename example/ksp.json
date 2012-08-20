@@ -1,6 +1,7 @@
 {
     "name": "example",
     "charset": "gbk",
+    "pub": 20120820,
     "main": ["package_one/main_a.js", "package_two/main_b.js"],
-    "outputPath": "{{path}}/{{filename}}.combo.js"
+    "output": "publish/{{basePath}}/{{filename}}.combo.js"
 }

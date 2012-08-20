@@ -8,33 +8,20 @@ var _ = require( 'underscore' );
 
 var Util = require( '../lib/util' );
 
-// Module to parser kissy.
-var moduleCompiler = require( '../lib/moduleCompiler' );
 // KSP info.
 var packageInfo = require( '../package.json' );
 
 // The directory that executing `ksp`.
 var EXECUTE_BASE_PATH = process.cwd() || '.';
 // KSP configuration filename.
-var KSP_CONFIG_FILENAME = 'ksp_package.json';
+var KSP_CONFIG_FILENAME = 'ksp.json';
 
 program
     // Set version.
     .version( packageInfo.version )
-    .option('-c, --wrapConfig', 'Wrap output code with KISSY package configuration.')
+    .option('-w, --wrapConfig', 'Wrap output code with KISSY package configuration.')
     // Parse the arguments.
     .parse(process.argv);
-
-// The default KSP configuration.
-var packageConfig = {
-    name: 'KSB-Package',
-    path: '',
-    charset: 'gbk',
-    pub: '',
-    main: './main_a.js',
-    outputPath: 'publish/index.combo.js'
-};
-
 
 /**
  * Read the configuration from KSP config file.
