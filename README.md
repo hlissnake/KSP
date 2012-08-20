@@ -1,7 +1,195 @@
 KSP
 =======
 
-Kissy Simple Pipe
+Kissy Simple Pie
+
+又一个KISSY模块打包工具，特点：
+ * 使用JSON文件进行灵活的包配置.
+ * 完全灵活，没有文件目录的要求.
+ * 功能单一：只提供打包功能(有空了把压缩也加上)
+
+## 安装
+
+```
+npm install ksp -g
+```
+
+## 使用
+
+### 基本
+
+`ksp`的使用是基于配置文件`ksp.json`，且理论上配置文件与需要打包的文件没有强制的路径位置关系。
+
+OK!直接看下例子，现在我们有目录`KSP/example/package_one`,该目录下文件如下：
+
+`main_a.js`:
+
+```js
+KISSY.add(function(){
+
+    console.log( 'index');
+},{requires: [ './mod' ]});
+```
+
+`mod.js`:
+
+```js
+KISSY.add(function(){
+    console.log( 'mod' );
+});
+```
+
+要将两个模块打包，我们需要在`KSP/example/package_one`目录下添加配置文件`ksp.json`, 内容如下:
+
+```js
+{
+    "name": "example",
+    "charset": "gbk",
+    "pub": 20120820,
+    "main": "main_a.js",
+    "output": "publish/main_a.combo.js"
+}
+```
+
+好的，你需要的配置工作到此为止.接下来你只需要在终端(win下cmd)下进入目录`KSP/example/package_one`，然后执行：
+
+```
+ksp
+```
+
+OK!打包完毕,打包后的文件会输出到路径`KSP/example/package_one/publish/20120820/main_a.combo.js`。
+
+打包过的文件的模块名称为`example/package_one/mod`和`example/package_one/main_a`。
+
+注意到`ksp`自动为`output`添加了`put`值作为时间戳目录，如果没有给出`put`则直接使用`output`.
+
+### Path? KSP自动帮你找到它
+
+注意到，在`ksp.json`中，只给定了包名，`KSP`自动根据当前路径向上找到包名对应的路径，不需要手动配置。
+
+### 批量打包多个文件
+
+如果有多个文件需要打包，只需要在`ksp.json`中将所有的入口文件以数组的形式设置给`main`：
+
+```js
+{
+    "name": "example",
+    "charset": "gbk",
+    "pub": 20120820,
+    "main": ["package_one/main_a.js", "package_two/main_b.js"],
+    "output": "publish/{{filename}}.combo.js"
+}
+```
+
+其中`output`值使用`mustache`作为模板构造文件输出路径，除了`filename`外，还有以下几个变量可以使用:
+
+ * pub 如果给出了pub
+ * path 入口文件所在路径
+ * basePath 入口文件的父目录名称，比如入口文件`package_one/main_a.js`，其`basePath`为`package_one`
+
+通过以上参数，我们可以构建很灵活的输出路径，比如下面的配置(将该配置文件放在目录`KSP/example`目录下)：
+
+```js
+{
+    "name": "example",
+    "charset": "gbk",
+    "pub": 20120820,
+    "main": ["package_one/main_a.js", "package_two/main_b.js"],
+    "output": "publish/{{pub}}/{{basePath}}/{{filename}}.combo.js"
+}
+```
+
+将输出目录:
+
+```
+KSP
+ - example
+    - publish
+       - 20120820
+          - package_one
+             - main_a.combo.js
+          - package_two
+             - main_a.combo.js
+
+### (小众功能）将KISSY 配置和入口执行以及模块定义合并，All in one.
+
+要使用该小众功能，只需要在执行`ksp`命令式添加使用参数`-w`：`ksp -w`，将会输出如下文件:
+
+```js
+(function(S){
+
+    // 包名
+    var PACKAGE_NAME = 'example';
+    // 入口模块的包路径
+    var MAIN_MOD_PATH = 'example/package_one/main_a.js';
+    // 包Tag
+    var PACKAGE_TAG = '';
+    // 包的编码
+    var PACKAGE_CHARSET = 'gbk';
+
+    // 获取KISSY package 配置需要用到的 `path` 值.
+    var scripts = document.getElementsByTagName("script");
+    var currentScriptPath = scripts[ scripts.length -1 ].src;
+    var packagePath;
+
+    // 若为IE，则会取相对地址...因此根据当前页面构造
+    if( S.UA.ie <= 7 && currentScriptPath.indexOf( 'http://' ) < 0 ){
+        var pageUrl = location.href;
+        var pageUrlArr = pageUrl.split( '/');
+        var packagePathArr = currentScriptPath.split( '/' );
+        pageUrlArr.pop();
+
+        S.each( packagePathArr, function( pkgSeg ){
+            if( pkgSeg == '..' ){
+                pageUrlArr.pop();
+            }
+            else if( pkgSeg != '.' ){
+                pageUrlArr.push( pkgSeg );
+            }
+        });
+
+        currentScriptPath = pageUrlArr.join( '/' );
+    }
+
+    // 当前脚本的url除去入口模块的路劲就是包的path.
+    packagePath = currentScriptPath.substring( 0, currentScriptPath.indexOf( MAIN_MOD_PATH ) );
+
+    // 包配置
+    S.config({
+        packages:[
+            {
+                name: PACKAGE_NAME,
+                tag: PACKAGE_TAG,
+                path: packagePath,
+                charset: PACKAGE_CHARSET
+            }
+        ]
+    });
+})( KISSY );
+
+// 引入所有的模块定义
+/*
+combined files :
+
+example/package_one/mod
+example/package_one/main_a
+
+*/
+KISSY.add('example/package_one/mod',function(){
+    console.log( 'mod' );
+});KISSY.add('example/package_one/main_a',function(){
+
+    console.log( 'index');
+},{requires: [ './mod' ]});
+
+(function(S){
+    // 启动入口模块
+    S.use( 'example/package_one/main_a.js' );
+})();
+
+```
+
+That's all!
 
 ## License
 
