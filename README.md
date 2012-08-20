@@ -110,6 +110,7 @@ KSP
              - main_a.combo.js
           - package_two
              - main_a.combo.js
+```
 
 ### (小众功能）将KISSY 配置和入口执行以及模块定义合并，All in one.
 

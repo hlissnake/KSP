@@ -48,6 +48,7 @@ if( kspConfig === undefined ){
 }
 
 // If path is not specified, calculate it automatically.
+// todo 应该根据入口文件来获取, 如果EXECUTE_BASE_PATH 在package之上则会有问题
 if( !kspConfig.path ){
     kspConfig.path = Util.getPackagePath( kspConfig.name, EXECUTE_BASE_PATH );
 }
