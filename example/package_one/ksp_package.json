@@ -1,7 +1,7 @@
 {
-    "name": "package_one",
+    "name": "example",
     "charset": "gbk",
     "pub": "2345555",
     "main": "./index.js",
-    "outputPath": "publish/index.combo.js"
+    "outputPath": "../pub/index.combo.js"
 }

@@ -6,11 +6,12 @@ var Path = require( 'path' );
 var Mustache = require( 'mustache' );
 var _ = require( 'underscore' );
 
+var Util = require( '../lib/util' );
+
 // Module to parser kissy.
 var moduleCompiler = require( '../lib/moduleCompiler' );
 // KSP info.
 var packageInfo = require( '../package.json' );
-var Util = require( '../lib/util' );
 
 // The directory that executing `ksp`.
 var EXECUTE_BASE_PATH = process.cwd() || '.';
@@ -20,6 +21,7 @@ var KSP_CONFIG_FILENAME = 'ksp_package.json';
 program
     // Set version.
     .version( packageInfo.version )
+    .option('-c, --wrapConfig', 'Wrap output code with KISSY package configuration.')
     // Parse the arguments.
     .parse(process.argv);
 
@@ -42,7 +44,6 @@ var packageConfig = {
 function readPkgConfig(){
 
     var cfgPath = Path.join( EXECUTE_BASE_PATH, KSP_CONFIG_FILENAME );
-    console.log( cfgPath );
     if( fs.existsSync( cfgPath ) ){
         return require( Path.join( cfgPath ) );
     }
@@ -96,4 +97,15 @@ moduleCompiler.config({
 // Build!
 moduleCompiler.build( inputPath, outputPath );
 
+
+// if --wrapConfig is specified, Wrap with package config.
+if( program.wrapConfig ){
+
+    Util.combo_with_config({
+        packageName: kspConfig.name,
+        mainModPath: mainModulePath,
+        tag: kspConfig.tag,
+        charset: kspConfig.charset
+    }, outputPath, outputPath );
+}
 
