@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "author": "Neekey ni184775761@gmail.com",
     "keywords": [ "ksp" ],
-    "main": "index.js",
+    "main": "main_a.js",
     "bin": { "KSP": "./bin/ksp" },
     "repository": {
     "type": "git",

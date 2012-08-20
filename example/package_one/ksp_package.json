@@ -1,7 +1,0 @@
-{
-    "name": "example",
-    "charset": "gbk",
-    "pub": "2345555",
-    "main": "./index.js",
-    "outputPath": "../pub/index.combo.js"
-}
