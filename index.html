@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Ksp by neekey</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Ksp</h1>
+        <p class="header">KISSY Simple Pie</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/neekey/KSP/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/neekey/KSP/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/neekey/KSP">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/neekey">neekey</a></p>
+
+
+      </header>
+      <section>
+        <h1>KSP</h1>
+
+<p>Kissy Simple Pie</p>
+
+<p>又一个KISSY模块打包工具，特点：</p>
+
+<ul>
+<li>使用JSON文件进行灵活的包配置.</li>
+<li>完全灵活，没有文件目录的要求.</li>
+<li>功能单一：只提供打包功能(有空了把压缩也加上)</li>
+<li>基于<code>moduleCompiler</code>,非常感谢@紫英</li>
+</ul><h2>安装</h2>
+
+<pre><code>npm install ksp -g
+</code></pre>
+
+<h2>使用</h2>
+
+<h3>基本</h3>
+
+<p><code>ksp</code>的使用是基于配置文件<code>ksp.json</code>，且理论上配置文件与需要打包的文件没有强制的路径位置关系。</p>
+
+<p>OK!直接看下例子，现在我们有目录<code>KSP/example/package_one</code>,该目录下文件如下：</p>
+
+<p><code>main_a.js</code>:</p>
+
+<div class="highlight"><pre><span class="nx">KISSY</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s1">'index'</span><span class="p">);</span>
+<span class="p">},{</span><span class="nx">requires</span><span class="o">:</span> <span class="p">[</span> <span class="s1">'./mod'</span> <span class="p">]});</span>
+</pre></div>
+
+<p><code>mod.js</code>:</p>
+
+<div class="highlight"><pre><span class="nx">KISSY</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s1">'mod'</span> <span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>要将两个模块打包，我们需要在<code>KSP/example/package_one</code>目录下添加配置文件<code>ksp.json</code>, 内容如下:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">"name"</span><span class="o">:</span> <span class="s2">"example"</span><span class="p">,</span>
+    <span class="s2">"charset"</span><span class="o">:</span> <span class="s2">"gbk"</span><span class="p">,</span>
+    <span class="s2">"pub"</span><span class="o">:</span> <span class="mi">20120820</span><span class="p">,</span>
+    <span class="s2">"main"</span><span class="o">:</span> <span class="s2">"main_a.js"</span><span class="p">,</span>
+    <span class="s2">"output"</span><span class="o">:</span> <span class="s2">"publish/main_a.combo.js"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>好的，你需要的配置工作到此为止.接下来你只需要在终端(win下cmd)下进入目录<code>KSP/example/package_one</code>，然后执行：</p>
+
+<pre><code>ksp
+</code></pre>
+
+<p>OK!打包完毕,打包后的文件会输出到路径<code>KSP/example/package_one/publish/20120820/main_a.combo.js</code>。</p>
+
+<p>打包过的文件的模块名称为<code>example/package_one/mod</code>和<code>example/package_one/main_a</code>。</p>
+
+<p>注意到<code>ksp</code>自动为<code>output</code>添加了<code>put</code>值作为时间戳目录，如果没有给出<code>put</code>则直接使用<code>output</code>.</p>
+
+<h3>Path? KSP自动帮你找到它</h3>
+
+<p>注意到，在<code>ksp.json</code>中，只给定了包名，<code>KSP</code>自动根据当前路径向上找到包名对应的路径，不需要手动配置。</p>
+
+<h3>批量打包多个文件</h3>
+
+<p>如果有多个文件需要打包，只需要在<code>ksp.json</code>中将所有的入口文件以数组的形式设置给<code>main</code>：</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">"name"</span><span class="o">:</span> <span class="s2">"example"</span><span class="p">,</span>
+    <span class="s2">"charset"</span><span class="o">:</span> <span class="s2">"gbk"</span><span class="p">,</span>
+    <span class="s2">"pub"</span><span class="o">:</span> <span class="mi">20120820</span><span class="p">,</span>
+    <span class="s2">"main"</span><span class="o">:</span> <span class="p">[</span><span class="s2">"package_one/main_a.js"</span><span class="p">,</span> <span class="s2">"package_two/main_b.js"</span><span class="p">],</span>
+    <span class="s2">"output"</span><span class="o">:</span> <span class="s2">"publish/{{filename}}.combo.js"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>其中<code>output</code>值使用<code>mustache</code>作为模板构造文件输出路径，除了<code>filename</code>外，还有以下几个变量可以使用:</p>
+
+<ul>
+<li>pub 如果给出了pub</li>
+<li>path 入口文件所在路径</li>
+<li>basePath 入口文件的父目录名称，比如入口文件<code>package_one/main_a.js</code>，其<code>basePath</code>为<code>package_one</code>
+</li>
+</ul><p>通过以上参数，我们可以构建很灵活的输出路径，比如下面的配置(将该配置文件放在目录<code>KSP/example</code>目录下)：</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">"name"</span><span class="o">:</span> <span class="s2">"example"</span><span class="p">,</span>
+    <span class="s2">"charset"</span><span class="o">:</span> <span class="s2">"gbk"</span><span class="p">,</span>
+    <span class="s2">"pub"</span><span class="o">:</span> <span class="mi">20120820</span><span class="p">,</span>
+    <span class="s2">"main"</span><span class="o">:</span> <span class="p">[</span><span class="s2">"package_one/main_a.js"</span><span class="p">,</span> <span class="s2">"package_two/main_b.js"</span><span class="p">],</span>
+    <span class="s2">"output"</span><span class="o">:</span> <span class="s2">"publish/{{pub}}/{{basePath}}/{{filename}}.combo.js"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>将输出目录:</p>
+
+<pre><code>KSP
+ - example
+    - publish
+       - 20120820
+          - package_one
+             - main_a.combo.js
+          - package_two
+             - main_a.combo.js
+</code></pre>
+
+<h3>(小众功能）将KISSY 配置和入口执行以及模块定义合并，All in one.</h3>
+
+<p>要使用该小众功能，只需要在执行<code>ksp</code>命令式添加使用参数<code>-w</code>：<code>ksp -w</code>，将会输出如下文件:</p>
+
+<div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">S</span><span class="p">){</span>
+
+    <span class="c1">// 包名</span>
+    <span class="kd">var</span> <span class="nx">PACKAGE_NAME</span> <span class="o">=</span> <span class="s1">'example'</span><span class="p">;</span>
+    <span class="c1">// 入口模块的包路径</span>
+    <span class="kd">var</span> <span class="nx">MAIN_MOD_PATH</span> <span class="o">=</span> <span class="s1">'example/package_one/main_a.js'</span><span class="p">;</span>
+    <span class="c1">// 包Tag</span>
+    <span class="kd">var</span> <span class="nx">PACKAGE_TAG</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+    <span class="c1">// 包的编码</span>
+    <span class="kd">var</span> <span class="nx">PACKAGE_CHARSET</span> <span class="o">=</span> <span class="s1">'gbk'</span><span class="p">;</span>
+
+    <span class="c1">// 获取KISSY package 配置需要用到的 `path` 值.</span>
+    <span class="kd">var</span> <span class="nx">scripts</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">"script"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">currentScriptPath</span> <span class="o">=</span> <span class="nx">scripts</span><span class="p">[</span> <span class="nx">scripts</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span><span class="mi">1</span> <span class="p">].</span><span class="nx">src</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">packagePath</span><span class="p">;</span>
+
+    <span class="c1">// 若为IE，则会取相对地址...因此根据当前页面构造</span>
+    <span class="k">if</span><span class="p">(</span> <span class="nx">S</span><span class="p">.</span><span class="nx">UA</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&lt;=</span> <span class="mi">7</span> <span class="o">&amp;&amp;</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s1">'http://'</span> <span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">pageUrl</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">pageUrlArr</span> <span class="o">=</span> <span class="nx">pageUrl</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span> <span class="s1">'/'</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">packagePathArr</span> <span class="o">=</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span> <span class="s1">'/'</span> <span class="p">);</span>
+        <span class="nx">pageUrlArr</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+
+        <span class="nx">S</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">packagePathArr</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">pkgSeg</span> <span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span> <span class="nx">pkgSeg</span> <span class="o">==</span> <span class="s1">'..'</span> <span class="p">){</span>
+                <span class="nx">pageUrlArr</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="nx">pkgSeg</span> <span class="o">!=</span> <span class="s1">'.'</span> <span class="p">){</span>
+                <span class="nx">pageUrlArr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">pkgSeg</span> <span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+
+        <span class="nx">currentScriptPath</span> <span class="o">=</span> <span class="nx">pageUrlArr</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s1">'/'</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 当前脚本的url除去入口模块的路劲就是包的path.</span>
+    <span class="nx">packagePath</span> <span class="o">=</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">MAIN_MOD_PATH</span> <span class="p">)</span> <span class="p">);</span>
+
+    <span class="c1">// 包配置</span>
+    <span class="nx">S</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+        <span class="nx">packages</span><span class="o">:</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">PACKAGE_NAME</span><span class="p">,</span>
+                <span class="nx">tag</span><span class="o">:</span> <span class="nx">PACKAGE_TAG</span><span class="p">,</span>
+                <span class="nx">path</span><span class="o">:</span> <span class="nx">packagePath</span><span class="p">,</span>
+                <span class="nx">charset</span><span class="o">:</span> <span class="nx">PACKAGE_CHARSET</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">});</span>
+<span class="p">})(</span> <span class="nx">KISSY</span> <span class="p">);</span>
+
+<span class="c1">// 引入所有的模块定义</span>
+<span class="cm">/*</span>
+<span class="cm">combined files :</span>
+
+<span class="cm">example/package_one/mod</span>
+<span class="cm">example/package_one/main_a</span>
+
+<span class="cm">*/</span>
+<span class="nx">KISSY</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">'example/package_one/mod'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s1">'mod'</span> <span class="p">);</span>
+<span class="p">});</span><span class="nx">KISSY</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">'example/package_one/main_a'</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s1">'index'</span><span class="p">);</span>
+<span class="p">},{</span><span class="nx">requires</span><span class="o">:</span> <span class="p">[</span> <span class="s1">'./mod'</span> <span class="p">]});</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">S</span><span class="p">){</span>
+    <span class="c1">// 启动入口模块</span>
+    <span class="nx">S</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span> <span class="s1">'example/package_one/main_a.js'</span> <span class="p">);</span>
+<span class="p">})();</span>
+</pre></div>
+
+<p>That's all!</p>
+
+<h2>License</h2>
+
+<p>(The MIT License)</p>
+
+<p>Copyright (c) 2012 Neekey <a href="mailto:ni184775761@gmail.com">ni184775761@gmail.com</a>;</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
