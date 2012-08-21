@@ -126,8 +126,8 @@ KSP
 
     // 包名
     var PACKAGE_NAME = 'example';
-    // 入口模块的包路径
-    var MAIN_MOD_PATH = 'example/package_one/main_a.js';
+    // 当前文件页面引用地址中报名到文件名部分
+    var OUTPUT_PACKAGE_PATH = 'example/publish/package_one/20120820/main_a.combo.js';
     // 包Tag
     var PACKAGE_TAG = '';
     // 包的编码
@@ -158,7 +158,7 @@ KSP
     }
 
     // 当前脚本的url除去入口模块的路劲就是包的path.
-    packagePath = currentScriptPath.substring( 0, currentScriptPath.indexOf( MAIN_MOD_PATH ) );
+    packagePath = currentScriptPath.substring( 0, currentScriptPath.indexOf( OUTPUT_PACKAGE_PATH ) );
 
     // 包配置
     S.config({
@@ -169,6 +169,10 @@ KSP
                 path: packagePath,
                 charset: PACKAGE_CHARSET
             }
+        ],
+        // 将所有当前包下的请都映射到当前文件
+        map: [
+            [ new RegExp( '\/' + PACKAGE_NAME + '\/.*' ), currentScriptPath ]
         ]
     });
 })( KISSY );
@@ -190,9 +194,8 @@ KISSY.add('example/package_one/mod',function(){
 
 (function(S){
     // 启动入口模块
-    S.use( 'example/package_one/main_a.js' );
-})();
-
+    S.use( 'example/package_one/main_a' );
+})(KISSY);
 ```
 
 That's all!
