@@ -6,7 +6,7 @@ Kissy Simple Pie
 又一个KISSY模块打包工具，特点：
  * 使用JSON文件进行灵活的包配置.
  * 完全灵活，没有文件目录的要求.
- * 使用`UglifyJS`进行代码压缩.
+ * 使用[UglifyJS](https://github.com/mishoo/UglifyJS)进行代码压缩.
  * 基于`[moduleCompiler](https://github.com/czy88840616/tbuild/blob/master/lib/util/moduleComplier.js)`,非常感谢@紫英.
 
 `KSP`非常适合将现有的项目从`ant`繁琐的配置中解脱出来。
