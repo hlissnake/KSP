@@ -7,7 +7,11 @@ Kissy Simple Pie
  * 使用JSON文件进行灵活的包配置.
  * 完全灵活，没有文件目录的要求.
  * 功能单一：只提供打包功能(有空了把压缩也加上)
- * 基于`moduleCompiler`,非常感谢@紫英
+ * 基于`[moduleCompiler](https://github.com/czy88840616/tbuild/blob/master/lib/util/moduleComplier.js)`,非常感谢@紫英.
+
+`KSP`非常适合将现有的项目从`ant`繁琐的配置中解脱出来。
+
+另外，作为`nodeJS`的用户，要将`KSP`结合其他工具或者命令一同使用，推荐一个基于`nodeJS`的类似`Make`或者`Rake`的`build tool`：[Jake](https://github.com/mde/jake).
 
 ## 安装
 
