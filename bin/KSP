@@ -1,63 +1,28 @@
 #!/usr/bin/env node
 
 var program = require( 'commander' );
-var fs = require( 'fs' );
-var Path = require( 'path' );
-var Mustache = require( 'mustache' );
-var _ = require( 'underscore' );
-
 var Util = require( '../lib/util' );
+var PackageBuilder = require( '../lib/packageBuilder');
 
 // KSP info.
 var packageInfo = require( '../package.json' );
-
-// The directory that executing `ksp`.
-var EXECUTE_BASE_PATH = process.cwd() || '.';
-// KSP configuration filename.
-var KSP_CONFIG_FILENAME = 'ksp.json';
 
 program
     // Set version.
     .version( packageInfo.version )
     .option('-w, --wrapConfig', 'Wrap output code with KISSY package configuration.')
+    .option('-c, --compress', 'Compress output code with UglifyJS.')
     // Parse the arguments.
     .parse(process.argv);
 
-/**
- * Read the configuration from KSP config file.
- *
- * @return {*}
- */
-function readPkgConfig(){
-
-    var cfgPath = Path.join( EXECUTE_BASE_PATH, KSP_CONFIG_FILENAME );
-    if( fs.existsSync( cfgPath ) ){
-        return require( Path.join( cfgPath ) );
-    }
-    else {
-        return undefined;
-    }
-}
-
-// ==== Main ====
 
 // Get KSP config, if Fail, terminal this task.
-var kspConfig = readPkgConfig();
-if( kspConfig === undefined ){
-    throw new Error( '`' + KSP_CONFIG_FILENAME + '` is not found in directory: ' + EXECUTE_BASE_PATH );
-}
-
-// If path is not specified, calculate it automatically.
-// todo 应该根据入口文件来获取, 如果EXECUTE_BASE_PATH 在package之上则会有问题
-if( !kspConfig.path ){
-    kspConfig.path = Util.getPackagePath( kspConfig.name, EXECUTE_BASE_PATH );
-}
-
-if( typeof kspConfig.main == 'string' ){
-    kspConfig.main = [ kspConfig.main ];
-}
+var kspConfig = Util.parseConfig();
 
 kspConfig.main.forEach(function( mainPath ){
 
-    Util.build( kspConfig, mainPath, program.wrapConfig );
+    PackageBuilder( kspConfig, mainPath, {
+        ifComboConfig: program.wrapConfig,
+        ifCompress: program.compress
+    });
 });

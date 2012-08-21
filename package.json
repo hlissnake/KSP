@@ -1,7 +1,7 @@
 {
     "name": "ksp",
     "description": "Kissy Simple Pie",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "author": "Neekey ni184775761@gmail.com",
     "keywords": [ "ksp" ],
     "main": "main_a.js",

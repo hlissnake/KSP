@@ -6,7 +6,7 @@ Kissy Simple Pie
 又一个KISSY模块打包工具，特点：
  * 使用JSON文件进行灵活的包配置.
  * 完全灵活，没有文件目录的要求.
- * 功能单一：只提供打包功能(有空了把压缩也加上)
+ * 使用`UglifyJS`进行代码压缩.
  * 基于`[moduleCompiler](https://github.com/czy88840616/tbuild/blob/master/lib/util/moduleComplier.js)`,非常感谢@紫英.
 
 `KSP`非常适合将现有的项目从`ant`繁琐的配置中解脱出来。
@@ -116,6 +116,26 @@ KSP
           - package_two
              - main_a.combo.js
 ```
+
+### 压缩
+
+`KSP`使用[UglifyJS](https://github.com/mishoo/UglifyJS)进行代码的压缩.
+
+使用`ksp -c`，将对输出的文件进行压缩，如果希望生成额外的压缩文件，可以在`ksp.json`中进行配置
+
+```js
+{
+    "name": "example",
+    "charset": "gbk",
+    "pub": 20120820,
+    "main": ["package_one/main_a.js", "package_two/main_b.js"],
+    "output": "publish/{{filename}}.combo.js",
+    "compress": "-min"
+}
+```
+之后执行`ksp`命令将生成一个额外的`-min`压缩过的文件.
+
+注意，如果已经在配置文件中指定了`compress`字段，`ksp`命令的`-c`字段将不起作用，它将不对源文件进行压缩.
 
 ### (小众功能）将KISSY 配置和入口执行以及模块定义合并，All in one.
 
