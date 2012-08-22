@@ -12,10 +12,6 @@ Kissy Simple Pie
 
 `KSP`非常适合将现有的项目从`ant`繁琐的配置中解脱出来。
 
-![](https://raw.github.com/neekey/KSP/master/public/screenshot.png)
-
-另外，作为`nodeJS`的用户，要将`KSP`结合其他工具或者命令一同使用，推荐一个基于`nodeJS`的类似`Make`或者`Rake`的`build tool`：[Jake](https://github.com/mde/jake).
-
 ## 命令参数
 ```
   Usage: KSP [options]
@@ -232,6 +228,9 @@ KISSY.add('example/package_one/mod',function(){
     S.use( 'example/package_one/main_a' );
 })(KISSY);
 ```
+## 屏幕截图
+
+![](https://raw.github.com/neekey/KSP/master/public/screenshot.png)
 
 That's all!
 
