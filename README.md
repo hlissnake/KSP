@@ -12,7 +12,7 @@ Kissy Simple Pie
 
 `KSP`非常适合将现有的项目从`ant`繁琐的配置中解脱出来。
 
-![](https://raw.github.com/neekey/KSP/master/public/screenshot.jpg)
+![](https://raw.github.com/neekey/KSP/master/public/screenshot.png)
 
 另外，作为`nodeJS`的用户，要将`KSP`结合其他工具或者命令一同使用，推荐一个基于`nodeJS`的类似`Make`或者`Rake`的`build tool`：[Jake](https://github.com/mde/jake).
 
