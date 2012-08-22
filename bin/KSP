@@ -13,8 +13,14 @@ program
     .version( packageInfo.version )
     .option('-w, --wrapConfig', 'Wrap output code with KISSY package configuration.')
     .option('-c, --compress', 'Compress output code with UglifyJS.')
+    .option('-s, --silent', 'Silent all the log.')
     // Parse the arguments.
     .parse(process.argv);
+
+// If silent is set, than silent the log.
+if( program.silent === true ){
+    Log.level = 'silent';
+}
 
 // === Log ===
 Log.info( 'Success if end up with:', 'OK' );
