@@ -15,6 +15,7 @@
         "commander": "*",
         "mustache": "*",
         "underscore": "*",
-        "uglify-js": "*"
+        "uglify-js": "*",
+        "npmlog": "*"
     }
 }

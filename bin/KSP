@@ -3,6 +3,7 @@
 var program = require( 'commander' );
 var Util = require( '../lib/util' );
 var PackageBuilder = require( '../lib/packageBuilder');
+var Log = require( '../lib/log' );
 
 // KSP info.
 var packageInfo = require( '../package.json' );
@@ -15,14 +16,26 @@ program
     // Parse the arguments.
     .parse(process.argv);
 
+// === Log ===
+Log.info( 'Success if end up with:', 'OK' );
 
 // Get KSP config, if Fail, terminal this task.
 var kspConfig = Util.parseConfig();
 
+// === Log ===
+Log.info( 'Building......' );
+
 kspConfig.main.forEach(function( mainPath ){
+
+    // === Log ===
+    Log.info( 'Building main module:', mainPath );
 
     PackageBuilder( kspConfig, mainPath, {
         ifComboConfig: program.wrapConfig,
         ifCompress: program.compress
     });
 });
+
+// === Log ===
+// Success!
+Log.info( 'OK' );
