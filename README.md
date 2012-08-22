@@ -8,11 +8,26 @@ Kissy Simple Pie
  * 完全灵活，没有文件目录的要求.
  * 使用[UglifyJS](https://github.com/mishoo/UglifyJS)进行代码压缩.
  * 基于`[moduleCompiler](https://github.com/czy88840616/tbuild/blob/master/lib/util/moduleComplier.js)`,非常感谢@紫英.
+ * 使用[npmlog](https://github.com/neekey/npmlog)进行信息输出.
 
 `KSP`非常适合将现有的项目从`ant`繁琐的配置中解脱出来。
 
+![](https://raw.github.com/neekey/KSP/master/public/screenshot.jpg)
+
 另外，作为`nodeJS`的用户，要将`KSP`结合其他工具或者命令一同使用，推荐一个基于`nodeJS`的类似`Make`或者`Rake`的`build tool`：[Jake](https://github.com/mde/jake).
 
+## 命令参数
+```
+  Usage: KSP [options]
+
+  Options:
+
+    -h, --help        output usage information
+    -V, --version     output the version number
+    -w, --wrapConfig  Wrap output code with KISSY package configuration.
+    -c, --compress    Compress output code with UglifyJS.
+    -s, --silent      Silent all the log.
+```
 ## 安装
 
 ```
