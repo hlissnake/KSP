@@ -14,15 +14,16 @@ Kissy Simple Pie
 
 ## 命令参数
 ```
-  Usage: KSP [options]
+    Usage: KSP [options]
 
-  Options:
+    Options:
 
-    -h, --help        output usage information
-    -V, --version     output the version number
-    -w, --wrapConfig  Wrap output code with KISSY package configuration.
-    -c, --compress    Compress output code with UglifyJS.
-    -s, --silent      Silent all the log.
+      -h, --help        output usage information
+      -V, --version     output the version number
+      -w, --wrapConfig  Wrap output code with KISSY package configuration.
+      -c, --compress    Compress output code with UglifyJS.
+      -s, --silent      Silent all the log.
+      -u, --update      Update KSP to latest version.
 ```
 ## 安装
 
@@ -228,6 +229,30 @@ KISSY.add('example/package_one/mod',function(){
     S.use( 'example/package_one/main_a' );
 })(KISSY);
 ```
+## KSP使用注意事项
+
+### 输出路径和模块名称的问题
+
+当我们的输出路径和入口文件在不用的目录时，`ksp`会自动帮你修改模块名称以适应新的路径。
+
+比如要将入口文件`/packageName/source/page_one/index.js`输出到`/packageName/release/20120823/page_one.js`，其模块名称将自动进行如下转化:
+
+```
+packageName/source/page/index ===> packageName/release/20120823/page_one
+```
+
+当时当入口文件中引入了一个非同级目录下的另一个模块时，自动转化将不可用.
+
+比如上面的`index.js`中引入模块`packageName/source/common/mod.js`, 将无法进行转化，其打包后的模块名称依旧为:
+
+```
+packageName/source/common/mod
+```
+
+在这个问题解决之前，请在使用`ksp`打包时，让你的入口文件与所有涉及到的模块在一个目录下（与入口文件同级或者在入口文件下级）。
+
+比如上面的例子，可以将入口文件向上移动一级到`packageName/source/page_one.js`.
+
 ## 屏幕截图
 
 ![](https://raw.github.com/neekey/KSP/master/public/screenshot.png)
