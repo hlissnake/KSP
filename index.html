@@ -39,9 +39,26 @@
 <ul>
 <li>使用JSON文件进行灵活的包配置.</li>
 <li>完全灵活，没有文件目录的要求.</li>
-<li>功能单一：只提供打包功能(有空了把压缩也加上)</li>
-<li>基于<code>moduleCompiler</code>,非常感谢@紫英</li>
-</ul><h2>安装</h2>
+<li>使用<a href="https://github.com/mishoo/UglifyJS">UglifyJS</a>进行代码压缩.</li>
+<li>基于<a href="https://github.com/czy88840616/tbuild/blob/master/lib/util/moduleComplier.js">moduleCompiler</a>,非常感谢@紫英.</li>
+<li>使用<a href="https://github.com/neekey/npmlog">npmlog</a>进行信息输出.</li>
+</ul><p><code>KSP</code>非常适合将现有的项目从<code>ant</code>繁琐的配置中解脱出来。</p>
+
+<h2>命令参数</h2>
+
+<pre><code>    Usage: KSP [options]
+
+    Options:
+
+      -h, --help        output usage information
+      -V, --version     output the version number
+      -w, --wrapConfig  Wrap output code with KISSY package configuration.
+      -c, --compress    Compress output code with UglifyJS.
+      -s, --silent      Silent all the log.
+      -u, --update      Update KSP to latest version.
+</code></pre>
+
+<h2>安装</h2>
 
 <pre><code>npm install ksp -g
 </code></pre>
@@ -138,6 +155,26 @@
              - main_a.combo.js
 </code></pre>
 
+<h3>压缩</h3>
+
+<p><code>KSP</code>使用<a href="https://github.com/mishoo/UglifyJS">UglifyJS</a>进行代码的压缩.</p>
+
+<p>使用<code>ksp -c</code>，将对输出的文件进行压缩，如果希望生成额外的压缩文件，可以在<code>ksp.json</code>中进行配置</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">"name"</span><span class="o">:</span> <span class="s2">"example"</span><span class="p">,</span>
+    <span class="s2">"charset"</span><span class="o">:</span> <span class="s2">"gbk"</span><span class="p">,</span>
+    <span class="s2">"pub"</span><span class="o">:</span> <span class="mi">20120820</span><span class="p">,</span>
+    <span class="s2">"main"</span><span class="o">:</span> <span class="p">[</span><span class="s2">"package_one/main_a.js"</span><span class="p">,</span> <span class="s2">"package_two/main_b.js"</span><span class="p">],</span>
+    <span class="s2">"output"</span><span class="o">:</span> <span class="s2">"publish/{{filename}}.combo.js"</span><span class="p">,</span>
+    <span class="s2">"compress"</span><span class="o">:</span> <span class="s2">"-min"</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>之后执行<code>ksp</code>命令将生成一个额外的<code>-min</code>压缩过的文件.</p>
+
+<p>注意，如果已经在配置文件中指定了<code>compress</code>字段，<code>ksp</code>命令的<code>-c</code>字段将不起作用，它将不对源文件进行压缩.</p>
+
 <h3>(小众功能）将KISSY 配置和入口执行以及模块定义合并，All in one.</h3>
 
 <p>要使用该小众功能，只需要在执行<code>ksp</code>命令式添加使用参数<code>-w</code>：<code>ksp -w</code>，将会输出如下文件:</p>
@@ -146,8 +183,8 @@
 
     <span class="c1">// 包名</span>
     <span class="kd">var</span> <span class="nx">PACKAGE_NAME</span> <span class="o">=</span> <span class="s1">'example'</span><span class="p">;</span>
-    <span class="c1">// 入口模块的包路径</span>
-    <span class="kd">var</span> <span class="nx">MAIN_MOD_PATH</span> <span class="o">=</span> <span class="s1">'example/package_one/main_a.js'</span><span class="p">;</span>
+    <span class="c1">// 当前文件页面引用地址中报名到文件名部分</span>
+    <span class="kd">var</span> <span class="nx">OUTPUT_PACKAGE_PATH</span> <span class="o">=</span> <span class="s1">'example/publish/package_one/20120820/main_a.combo.js'</span><span class="p">;</span>
     <span class="c1">// 包Tag</span>
     <span class="kd">var</span> <span class="nx">PACKAGE_TAG</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
     <span class="c1">// 包的编码</span>
@@ -178,7 +215,7 @@
     <span class="p">}</span>
 
     <span class="c1">// 当前脚本的url除去入口模块的路劲就是包的path.</span>
-    <span class="nx">packagePath</span> <span class="o">=</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">MAIN_MOD_PATH</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="nx">packagePath</span> <span class="o">=</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">currentScriptPath</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">OUTPUT_PACKAGE_PATH</span> <span class="p">)</span> <span class="p">);</span>
 
     <span class="c1">// 包配置</span>
     <span class="nx">S</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
@@ -189,6 +226,10 @@
                 <span class="nx">path</span><span class="o">:</span> <span class="nx">packagePath</span><span class="p">,</span>
                 <span class="nx">charset</span><span class="o">:</span> <span class="nx">PACKAGE_CHARSET</span>
             <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="c1">// 将所有当前包下的请都映射到当前文件</span>
+        <span class="nx">map</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">[</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span> <span class="s1">'\/'</span> <span class="o">+</span> <span class="nx">PACKAGE_NAME</span> <span class="o">+</span> <span class="s1">'\/.*'</span> <span class="p">),</span> <span class="nx">currentScriptPath</span> <span class="p">]</span>
         <span class="p">]</span>
     <span class="p">});</span>
 <span class="p">})(</span> <span class="nx">KISSY</span> <span class="p">);</span>
@@ -210,9 +251,35 @@
 
 <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">S</span><span class="p">){</span>
     <span class="c1">// 启动入口模块</span>
-    <span class="nx">S</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span> <span class="s1">'example/package_one/main_a.js'</span> <span class="p">);</span>
-<span class="p">})();</span>
+    <span class="nx">S</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span> <span class="s1">'example/package_one/main_a'</span> <span class="p">);</span>
+<span class="p">})(</span><span class="nx">KISSY</span><span class="p">);</span>
 </pre></div>
+
+<h2>KSP使用注意事项</h2>
+
+<h3>输出路径和模块名称的问题</h3>
+
+<p>当我们的输出路径和入口文件在不用的目录时，<code>ksp</code>会自动帮你修改模块名称以适应新的路径。</p>
+
+<p>比如要将入口文件<code>/packageName/source/page_one/index.js</code>输出到<code>/packageName/release/20120823/page_one.js</code>，其模块名称将自动进行如下转化:</p>
+
+<pre><code>packageName/source/page/index ===&gt; packageName/release/20120823/page_one
+</code></pre>
+
+<p>当时当入口文件中引入了一个非同级目录下的另一个模块时，自动转化将不可用.</p>
+
+<p>比如上面的<code>index.js</code>中引入模块<code>packageName/source/common/mod.js</code>, 将无法进行转化，其打包后的模块名称依旧为:</p>
+
+<pre><code>packageName/source/common/mod
+</code></pre>
+
+<p>在这个问题解决之前，请在使用<code>ksp</code>打包时，让你的入口文件与所有涉及到的模块在一个目录下（与入口文件同级或者在入口文件下级）。</p>
+
+<p>比如上面的例子，可以将入口文件向上移动一级到<code>packageName/source/page_one.js</code>.</p>
+
+<h2>屏幕截图</h2>
+
+<p><img src="https://raw.github.com/neekey/KSP/master/public/screenshot.png" alt=""></p>
 
 <p>That's all!</p>
 
