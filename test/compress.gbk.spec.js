@@ -1,5 +1,5 @@
 var Compress = require( '../lib/compress' );
-var Iconv = require( 'iconv-lite' );
+var Path = require( 'path' );
 var _ = require( 'underscore' );
 
 var sourceFilePath = './gbk.source.js';
@@ -25,7 +25,7 @@ describe('Test for `GBK` compress', function(){
     // todo 求更好的检验方式
     it( 'Compress', function(){
 
-        Compress( sourceFilePath, outputPath, { charset: 'GBK' } );
+        Compress( Path.resolve( __dirname, sourceFilePath ), Path.resolve( __dirname, outputPath ), { charset: 'GBK' } );
 
         var gbkInfo = require( sourceFilePath );
         var gbkCompressedInfo = require( outputPath );
