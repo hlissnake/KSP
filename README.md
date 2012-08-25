@@ -201,10 +201,6 @@ KSP
                 path: packagePath,
                 charset: PACKAGE_CHARSET
             }
-        ],
-        // 将所有当前包下的请都映射到当前文件
-        map: [
-            [ new RegExp( '\/' + PACKAGE_NAME + '\/.*' ), currentScriptPath ]
         ]
     });
 })( KISSY );
